@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Shape" ADD COLUMN     "fontSize" DOUBLE PRECISION DEFAULT 24;
