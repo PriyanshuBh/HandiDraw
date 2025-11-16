@@ -1,0 +1,35 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev ",
+    "db:deploy": "prisma migrate deploy",
+    "build": "pnpm db:generate",
+    "migrate": "npx dotenv -e .env -- prisma migrate dev"
+  },
+  "exports": {
+    "./client": "./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@prisma/config": "^7.4.0",
+    "@repo/typescript-config": "workspace:*",
+    "@types/pg": "^8.16.0",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^7.4.0",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "^7.4.0",
+    "@types/node": "^22.15.3",
+    "dotenv": "^17.2.3",
+    "pg": "^8.18.0"
+  }
+}
