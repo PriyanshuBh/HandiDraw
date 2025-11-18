@@ -1,0 +1,18 @@
+i, Initialized an empty turborepO
+2. Deleted the docs app
+3. Added http-server. ws-server
+4, Added packagcjson in both the places
+5 Added tsconfig.ison in both the places. and imported it from
+@repottvpeseript-confiwbase.jsoo
+6, Added @regntypescript.config as a dependency in both
+ws•server and http-serveg
+7. Added a build, dev and start script to both thc projects
+8. Update the turbo-con#g in both the projects (optional)
+9. Initialize a http server , Initialize a websocket server
+10. Create an express server. add signup, signin. create-room
+11. Create middleware, gate the create-room point
+12. Gate the websocket server using the token.
+13. Create a db package
+14. using the db package in the http layer
+15. Add a common package where we add
+the zod schema and the JWT_SECRET
