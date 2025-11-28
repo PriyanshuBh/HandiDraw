@@ -1,0 +1,72 @@
+import { Request, Response } from "express";
+import { SigninSchema } from "@repo/common/types"; // Converted to import
+
+import { prismaClient } from "@repo/db/client"; // Converted to import
+
+import { generateToken } from "../lib/utils.js";
+import bcyrpt from "bcrypt";
+
+export const signinHandler = async (req: Request, res: Response) => {
+  try {
+    const parsedData = SigninSchema.safeParse(req.body);
+
+    if (!parsedData.success) {
+      res.status(400).json({
+        msg: "invalid inputs",
+      });
+      return;
+    }
+
+    const checkUser = await prismaClient.user.findFirst({
+      where: {
+        email: parsedData.data.email,
+      },
+    });
+
+    if (!checkUser) {
+      res.status(400).json({
+        msg: "User with this email does not exist",
+      });
+      return;
+    }
+
+    if (!checkUser.password) {
+      res.status(400).json({
+        msg: "Invalid Password",
+      });
+      return;
+    }
+
+    if (checkUser.authType != "CREDENTIALS") {
+      res.status(400).json({
+        msg: "Invalid Login Attempt, Please Continue with Google.",
+      });
+      return;
+    }
+
+    const password = parsedData.data.password;
+    const checkPassword = await bcyrpt.compare(password, checkUser.password);
+
+    if (!checkPassword) {
+      res.status(400).json({
+        msg: "Incorrect password",
+      });
+      return;
+    }
+
+    // const token = jwt.sign({
+    //     userId: checkUser.id
+    // }, JWT_SECRET);
+    generateToken(checkUser.id, res);
+    res.status(200).json({
+      id: checkUser.id,
+      email: checkUser.email,
+      name: checkUser.name,
+    });
+  } catch (error) {
+    console.error("Error while signing in", error);
+    res.status(500).json({
+      msg: "internal server error",
+    });
+  }
+};
