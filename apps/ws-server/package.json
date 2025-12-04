@@ -1,0 +1,37 @@
+{
+  "name": "ws-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node ./dist/index.js",
+    "start:redis": "docker ps -q -f name=redis | grep -q . || docker run -d --name collabodraw-redis -p 6379:6379 redis",
+    "dev": "npm run build && npm run start",
+    "stop": "pkill -f server.js",
+    "restart": "pnpm stop && pnpm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@repo/backend-common": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.5",
+    "@types/express-ws": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/uuid": "^11.0.0",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-ws": "^5.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "redis": "^5.9.0",
+    "uuid": "^13.0.0",
+    "ws": "^8.18.3"
+  }
+}
