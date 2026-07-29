@@ -219,4 +219,7 @@ app.get("/server-health", async (req: Request, res: Response) => {
     }
 })
 
-app.listen(8080);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`WS server running on port ${PORT}`);
+});
