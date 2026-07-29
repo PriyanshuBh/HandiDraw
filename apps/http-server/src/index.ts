@@ -9,9 +9,13 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, "http://localhost:3000"]
+  : ["http://localhost:3000"];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: allowedOrigins,
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -41,4 +45,7 @@ app.get("/server-health", async (req: Request, res: Response) => {
     }
 })
 
-app.listen(4000)
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`HTTP server running on port ${PORT}`);
+});
