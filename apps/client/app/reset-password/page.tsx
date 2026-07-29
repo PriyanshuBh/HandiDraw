@@ -2,7 +2,7 @@
 import { useAuthStore } from "../../stores/authStore/authStore";
 import { Loader, Lock, Eye, EyeOff, ArrowLeft, PenTool } from "lucide-react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { AxiosInstance } from '../../lib/axios';
@@ -32,7 +32,7 @@ const MeshGradient = () => {
   );
 };
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { authUser, checkAuth } = useAuthStore();
@@ -239,5 +239,17 @@ export default function ResetPassword() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center bg-zinc-950 text-zinc-100">
+        <Loader className="animate-spin text-violet-500" size={32} />
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

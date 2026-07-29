@@ -340,9 +340,12 @@ export class DrawShapes {
             case "LINE": this.ctx.moveTo(shape.x, shape.y); this.ctx.lineTo(shape.points.endX, shape.points.endY); break;
             case "ARROW": canvas_arrow(this.ctx, shape.x, shape.y, shape.points.endX, shape.points.endY); break;
             case "PENCIL": case "ERASER":
-                if (shape.points.length > 0) {
+                if (shape.points.length > 0 && shape.points[0]) {
                     this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-                    for (let i = 1; i < shape.points.length; i++) this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
+                    for (let i = 1; i < shape.points.length; i++) {
+                        const pt = shape.points[i];
+                        if (pt) this.ctx.lineTo(pt.x, pt.y);
+                    }
                 } break;
             case "TEXT":
                 const fSize = shape.fontSize || 24;
@@ -395,7 +398,7 @@ export class DrawShapes {
         } else if (shape.type === 'LINE' || shape.type === 'ARROW') {
             shape.x += dx; shape.y += dy;
             shape.points.endX += dx; shape.points.endY += dy;
-        } else {
+        } else if ('x' in shape && 'y' in shape) {
             shape.x += dx; shape.y += dy;
         }
     }
@@ -424,12 +427,18 @@ export class DrawShapes {
 
     private isPointInShape(x: number, y: number, shape: Shapes): boolean {
         const threshold = (shape.strokeWidth || 2) / 2 / this.scale;
-        if (shape.type === 'PENCIL' || shape.type === 'LINE' || shape.type === 'ARROW') {
-            const points = shape.type === 'PENCIL' ? shape.points : [{x: shape.x, y: shape.y}, {x: shape.points.endX, y: shape.points.endY}];
-            for(let i=0; i<points.length - 1; i++){
-                if(distToSegment({x, y}, points[i], points[i+1]) < threshold) return true;
+        if (shape.type === 'PENCIL') {
+            for (let i = 0; i < shape.points.length - 1; i++) {
+                const p1 = shape.points[i];
+                const p2 = shape.points[i + 1];
+                if (p1 && p2 && distToSegment({ x, y }, p1, p2) < threshold) return true;
             }
             return false;
+        }
+        if (shape.type === 'LINE' || shape.type === 'ARROW') {
+            const p1 = { x: shape.x, y: shape.y };
+            const p2 = { x: shape.points.endX, y: shape.points.endY };
+            return distToSegment({ x, y }, p1, p2) < threshold;
         }
         const {minX, minY, maxX, maxY} = this.getShapeBounds(shape);
         return x >= minX - threshold && x <= maxX + threshold && y >= minY - threshold && y <= maxY + threshold;
